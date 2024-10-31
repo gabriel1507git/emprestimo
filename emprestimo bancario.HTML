@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Bancário Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #004D40, #00796B);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00BFA5, #1DE9B6);
+        }
+
+        .form-title {
+            text-align: center;
+            color: #00695C;
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #004D40;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00BFA5;
+            box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #00BFA5, #00897B);
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 191, 165, 0.2);
+        }
+
+        .toggle-form {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #546E7A;
+            font-size: 0.95rem;
+        }
+
+        .toggle-form a {
+            color: #00BFA5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loan-container {
+            max-width: 640px;
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #F5F9F9;
+            border-radius: 12px;
+            border: 1px solid #E0F2F1;
+        }
+
+        .result-title {
+            color: #00695C;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .result-item {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #004D40;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            color: #00796B;
+            font-size: 1.1rem;
+        }
+
+        .comparison-container {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #E0F2F1;
+        }
+
+        .comparison-title {
+            color: #00695C;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .economy-highlight {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #E0F2F1;
+            border-radius: 8px;
+            color: #00695C;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            background: #E0F2F1;
+            color: #00695C;
+            margin-top: 1rem;
+        }
+
+        .back-btn:hover {
+            background: #B2DFDB;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="loginForm">
+        <h2 class="form-title">Acesso Digital</h2>
+        <form onsubmit="return login(event)">
+            <div class="form-group">
+                <label for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" required placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Senha</label>
+                <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn">Acessar Conta</button>
+        </form>
+        <div class="toggle-form">
+            Ainda não tem conta? <a href="#" onclick="toggleForms()">Criar conta</a>
+        </div>
+    </div>
+
+
+    <div class="container hidden" id="registerForm">
+        <h2 class="form-title">Criar Conta</h2>
+        <form onsubmit="return register(event)">
+            <div class="form-group">
+                <label for="registerName">Nome Completo</label>
+                <input type="text" id="registerName" required placeholder="Digite seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">E-mail</label>
+                <input type="email" id="registerEmail" required placeholder="seu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Senha</label>
+                <input type="password" id="registerPassword" required placeholder="Mínimo 6 caracteres">
+            </div>
+            <button type="submit" class="btn">Criar Conta</button>
+        </form>
+        <div class="toggle-form">
+            Já tem uma conta? <a href="#" onclick="toggleForms()">Acessar</a>
+        </div>
+    </div>
+
+    <div class="container hidden" id="dashboard">
+        <h2 class="form-title">Área do Cliente</h2>
+        <button class="btn" onclick="showLoanForm()">Simular Empréstimo</button>
+        <button class="btn back-btn" style="margin-top: 1rem;" onclick="logout()">Sair</button>
+    </div>
+
+  
+    <div class="container loan-container hidden" id="loanForm">
+        <h2 class="form-title">Simulação de Empréstimo</h2>
+        <form onsubmit="return calculateLoan(event)">
+            <div class="form-group">
+                <label for="loanAmount">Valor Desejado</label>
+                <input type="number" id="loanAmount" required min="1000" placeholder="R$ 0,00">
+            </div>
+            <div class="form-group">
+                <label for="loanMonths">Prazo em Meses</label>
+                <input type="number" id="loanMonths" required min="1" max="360" placeholder="Ex: 12">
+            </div>
+            <div class="form-group">
+                <label for="interestRate">Taxa de Juros (% ao mês)</label>
+                <input type="number" id="interestRate" required step="0.01" min="0.01" placeholder="Ex: 1.99">
+            </div>
+            <button type="submit" class="btn">Calcular Simulação</button>
+        </form>
+        <div id="loanResult" class="result-container hidden">
+            <h3 class="result-title">Resultado da Simulação</h3>
+            <div class="result-item">
+                <span class="result-label">Valor Solicitado:</span>
+                <span class="result-value" id="resultAmount"></span>
+            </div>
+            
+            <div class="comparison-container">
+                <h4 class="comparison-title">Juros Compostos</h4>
+                <div class="result-item">
+                    <span class="result-label">Total de Juros:</span>
+                    <span class="result-value" id="resultCompoundInterest"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Valor Total:</span>
+                    <span class="result-value" id="resultCompoundTotal"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Parcela Mensal:</span>
+                    <span class="result-value" id="resultCompoundMonthly"></span>
+                </div>
+            </div>
+
+            <div class="comparison-container">
+                <h4 class="comparison-title">Juros Simples</h4>
+                <div class="result-item">
+                    <span class="result-label">Total de Juros:</span>
+                    <span class="result-value" id="resultSimpleInterest"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Valor Total:</span>
+                    <span class="result-value" id="resultSimpleTotal"></span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Parcela Mensal:</span>
+                    <span class="result-value" id="resultSimpleMonthly"></span>
+                </div>
+            </div>
+
+            <div class="economy-highlight">
+                <span id="interestComparison"></span>
+            </div>
+        </div>
+        <button class="btn back-btn" onclick="backToDashboard()">Voltar ao Menu</button>
+    </div>
+    <script>
+     
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let currentUser = null;
+
+
+        function toggleForms() {
+            document.getElementById('loginForm').classList.toggle('hidden');
+            document.getElementById('registerForm').classList.toggle('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('loanForm').classList.add('hidden');
+        }
+
+        function showLoanForm() {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loanForm').classList.remove('hidden');
+            document.getElementById('loanResult').classList.add('hidden');
+        }
+
+        function backToDashboard() {
+            document.getElementById('loanForm').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('loanResult').classList.add('hidden');
+        }
+
+       
+        function register(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            if (users.find(user => user.email === email)) {
+                alert('Este e-mail já está cadastrado.');
+                return false;
+            }
+
+            users.push({ name, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Conta criada com sucesso!');
+            toggleForms();
+            return false;
+        }
+
+        function login(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(user => user.email === email && user.password === password);
+
+            if (user) {
+                currentUser = user;
+                showDashboard();
+            } else {
+                alert('E-mail ou senha incorretos.');
+            }
+            return false;
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+
+        function calculateLoan(event) {
+            event.preventDefault();
+
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const months = parseInt(document.getElementById('loanMonths').value);
+            const rate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const compoundTotal = amount * Math.pow(1 + rate, months);
+            const compoundInterest = compoundTotal - amount;
+            const compoundMonthly = compoundTotal / months;
+            const simpleInterest = amount * rate * months;
+            const simpleTotal = amount + simpleInterest;
+            const simpleMonthly = simpleTotal / months;
+    
+            document.getElementById('resultAmount').textContent = formatCurrency(amount);
+            document.getElementById('resultCompoundInterest').textContent = formatCurrency(compoundInterest);
+            document.getElementById('resultCompoundTotal').textContent = formatCurrency(compoundTotal);
+            document.getElementById('resultCompoundMonthly').textContent = formatCurrency(compoundMonthly);
+            document.getElementById('resultSimpleInterest').textContent = formatCurrency(simpleInterest);
+            document.getElementById('resultSimpleTotal').textContent = formatCurrency(simpleTotal);
+            document.getElementById('resultSimpleMonthly').textContent = formatCurrency(simpleMonthly);
+         
+            const difference = compoundTotal - simpleTotal;
+            const differenceText = difference > 0 
+                ? `Com juros compostos você pagará ${formatCurrency(difference)} a mais do que com juros simples.`
+                : `Com juros simples você pagará ${formatCurrency(Math.abs(difference))} a mais do que com juros compostos.`;
+            
+            document.getElementById('interestComparison').textContent = differenceText;
+            document.getElementById('loanResult').classList.remove('hidden');
+            
+            return false;
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+    </script>
+</body>
+</html>
